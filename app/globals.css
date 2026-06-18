@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf8;
+  --foreground: #0a0a0a;
+  --secondary: #6b7280;
+  --divider: #e5e7eb;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Inter, Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #0a0a0a;
+  color: #fafaf8;
+}
+
+.coordinate-paper {
+  background-image:
+    linear-gradient(to right, rgba(10, 10, 10, 0.075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 10, 10, 0.075) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.contour-lines {
+  background:
+    radial-gradient(ellipse at 28% 42%, transparent 0 18%, rgba(10, 10, 10, 0.08) 18.2% 18.8%, transparent 19% 100%),
+    radial-gradient(ellipse at 34% 46%, transparent 0 26%, rgba(10, 10, 10, 0.07) 26.2% 26.8%, transparent 27% 100%),
+    radial-gradient(ellipse at 74% 28%, transparent 0 14%, rgba(10, 10, 10, 0.06) 14.2% 14.8%, transparent 15% 100%),
+    radial-gradient(ellipse at 70% 34%, transparent 0 22%, rgba(10, 10, 10, 0.055) 22.2% 22.8%, transparent 23% 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
