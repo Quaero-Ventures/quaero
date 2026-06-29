@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { ExternalLink } from "lucide-react";
 import posthog from "posthog-js";
 
@@ -8,9 +8,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const experimentProperties = {
-  experiment_id: "EXP-001",
+  experiment_id: "fresh-eyes",
   landing: "validate",
-  route: "/validate",
 };
 
 const googleFormUrl =
@@ -23,29 +22,6 @@ const trackedUtmParams = [
   "utm_content",
   "utm_term",
 ];
-
-let posthogInitialized = false;
-
-function initPostHog() {
-  if (posthogInitialized) {
-    return true;
-  }
-
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-
-  if (!key || !host) {
-    return false;
-  }
-
-  posthog.init(key, {
-    api_host: host,
-    capture_pageview: true,
-  });
-  posthogInitialized = true;
-
-  return true;
-}
 
 function getGoogleFormUrlWithUtms() {
   const destination = new URL(googleFormUrl);
@@ -62,26 +38,24 @@ function getGoogleFormUrlWithUtms() {
   return destination.toString();
 }
 
-export function ValidateLandingTracker() {
-  useEffect(() => {
-    initPostHog();
-  }, []);
-
-  return null;
-}
-
 type ValidateCtaProps = {
   className?: string;
+  label?: string;
   source: "hero" | "final_cta" | "nav";
 };
 
-export function ValidateCta({ className = "", source }: ValidateCtaProps) {
+export function ValidateCta({
+  className = "",
+  label = "Quero validar meu produto",
+  source,
+}: ValidateCtaProps) {
   const handleClick = useCallback(() => {
     const destinationUrl = getGoogleFormUrlWithUtms();
 
-    if (initPostHog()) {
+    if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
       posthog.capture("validate_requested", {
         ...experimentProperties,
+        route: window.location.pathname,
         destination: "google_form",
         source,
       });
@@ -96,7 +70,7 @@ export function ValidateCta({ className = "", source }: ValidateCtaProps) {
       onClick={handleClick}
       className={cn(buttonVariants({ size: "lg" }), className)}
     >
-      Quero validar meu produto
+      {label}
       <ExternalLink aria-hidden="true" className="h-4 w-4" />
     </button>
   );
