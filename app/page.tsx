@@ -248,6 +248,9 @@ export default function Home() {
             <Link href="#contact" className="hover:text-[#0A0A0A]">
               Contact
             </Link>
+            <Link href="/politica-de-privacidade" className="hover:text-[#0A0A0A]">
+              Política de Privacidade
+            </Link>
           </div>
         </div>
         <p className="text-xs text-[#6B7280]">Quaero. Seek before building.</p>
