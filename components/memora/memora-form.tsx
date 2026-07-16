@@ -18,9 +18,14 @@ import {
 } from "./memora-analytics";
 import { trackMetaLead } from "./meta-pixel";
 
-const FORMSPREE_ENDPOINT =
-  process.env.NEXT_PUBLIC_MEMORA_FORMSPREE_ENDPOINT ??
-  "https://formspree.io/f/xeeyeneb";
+const DEFAULT_FORMSPREE_ENDPOINT = "https://formspree.io/f/xeeyeneb";
+const configuredFormspreeEndpoint =
+  process.env.NEXT_PUBLIC_MEMORA_FORMSPREE_ENDPOINT;
+const FORMSPREE_ENDPOINT = configuredFormspreeEndpoint?.startsWith(
+  "https://formspree.io/f/",
+)
+  ? configuredFormspreeEndpoint
+  : DEFAULT_FORMSPREE_ENDPOINT;
 
 const FIELD_LIMITS = {
   name: 80,
