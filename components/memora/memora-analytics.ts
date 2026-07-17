@@ -10,6 +10,8 @@ export type MemoraAttribution = {
   utm_medium: string;
   utm_campaign: string;
   utm_content: string;
+  utm_term: string;
+  fbclid: string;
   referrer: string;
 };
 
@@ -29,6 +31,8 @@ export function getMemoraAttribution(): MemoraAttribution {
     utm_medium: searchParams.get("utm_medium") ?? "",
     utm_campaign: searchParams.get("utm_campaign") ?? "",
     utm_content: searchParams.get("utm_content") ?? "",
+    utm_term: searchParams.get("utm_term") ?? "",
+    fbclid: searchParams.get("fbclid") ?? "",
     referrer: document.referrer,
   };
 }
@@ -55,6 +59,6 @@ export function captureMemoraEvent(
       ...properties,
     });
   } catch {
-    // Analytics must never block the Formspree or landing experience.
+    // Analytics must never block the lead submission or landing experience.
   }
 }

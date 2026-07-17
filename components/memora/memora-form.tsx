@@ -12,20 +12,11 @@ import styles from "../../app/memora/memora.module.css";
 import {
   captureMemoraEvent,
   getMemoraAttribution,
-  MEMORA_LANDING_VARIANT,
-  MEMORA_PRICE,
   type MemoraAttribution,
 } from "./memora-analytics";
 import { trackMetaLead } from "./meta-pixel";
 
-const DEFAULT_FORMSPREE_ENDPOINT = "https://formspree.io/f/xeeyeneb";
-const configuredFormspreeEndpoint =
-  process.env.NEXT_PUBLIC_MEMORA_FORMSPREE_ENDPOINT;
-const FORMSPREE_ENDPOINT = configuredFormspreeEndpoint?.startsWith(
-  "https://formspree.io/f/",
-)
-  ? configuredFormspreeEndpoint
-  : DEFAULT_FORMSPREE_ENDPOINT;
+const MEMORA_FORM_ENDPOINT = process.env.NEXT_PUBLIC_MEMORA_FORM_ENDPOINT;
 
 const FIELD_LIMITS = {
   name: 80,
@@ -43,6 +34,12 @@ type FormValues = {
 
 type FieldName = keyof FormValues;
 type FormErrors = Partial<Record<FieldName, string>>;
+
+type LeadSubmitResponse = {
+  success?: boolean;
+  duplicate?: boolean;
+  error?: string;
+};
 
 const EMPTY_VALUES: FormValues = {
   name: "",
@@ -73,6 +70,7 @@ export function MemoraForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [website, setWebsite] = useState("");
   const sectionRef = useRef<HTMLElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -140,28 +138,43 @@ export function MemoraForm() {
     const attribution = attributionRef.current ?? getMemoraAttribution();
 
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      if (!MEMORA_FORM_ENDPOINT) {
+        throw new Error("Memora form endpoint is not configured.");
+      }
+
+      const response = await fetch(MEMORA_FORM_ENDPOINT, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          project: "memora",
+          funnel: "father_day_card",
           name: values.name.trim(),
           email: values.email.trim(),
-          message: values.message.trim(),
-          signature: values.signature.trim(),
-          ...attribution,
-          landing_variant: MEMORA_LANDING_VARIANT,
-          price: MEMORA_PRICE,
+          phone: null,
+          message: `${values.message.trim()}\n\nAssinatura: ${values.signature.trim()}`,
+          consent: true,
+          utm_source: attribution.utm_source,
+          utm_medium: attribution.utm_medium,
+          utm_campaign: attribution.utm_campaign,
+          utm_content: attribution.utm_content,
+          utm_term: attribution.utm_term,
+          fbclid: attribution.fbclid,
+          source_url: window.location.href,
+          referrer: attribution.referrer,
+          metadata: {
+            submitted_at: new Date().toISOString(),
+            user_agent: navigator.userAgent,
+          },
+          website,
         }),
       });
 
-      // Consume the Formspree response when available without making success
-      // depend on a response body; the HTTP status remains authoritative.
-      await response.json().catch(() => null);
+      const result = await response.json().catch(() => null) as LeadSubmitResponse | null;
 
-      if (!response.ok) {
+      if (!response.ok || result?.success !== true) {
         const message = response.status === 429
           ? "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente."
           : "Não foi possível enviar sua mensagem. Tente novamente em alguns instantes.";
@@ -174,14 +187,17 @@ export function MemoraForm() {
         return;
       }
 
-      captureMemoraEvent("memora_form_submitted", attribution, {
-        http_status: response.status,
-      });
-      if (!leadTrackedRef.current) {
-        trackMetaLead();
-        leadTrackedRef.current = true;
+      if (result.duplicate !== true) {
+        captureMemoraEvent("memora_form_submitted", attribution, {
+          http_status: response.status,
+        });
+        if (!leadTrackedRef.current) {
+          trackMetaLead();
+          leadTrackedRef.current = true;
+        }
       }
       setValues(EMPTY_VALUES);
+      setWebsite("");
       setErrors({});
       setIsSuccess(true);
       window.requestAnimationFrame(() => successRef.current?.focus());
@@ -216,6 +232,18 @@ export function MemoraForm() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate>
+            <div className={styles.srOnly} aria-hidden="true">
+              <label htmlFor="memora-website">Website</label>
+              <input
+                id="memora-website"
+                name="website"
+                type="text"
+                autoComplete="off"
+                tabIndex={-1}
+                value={website}
+                onChange={(event) => setWebsite(event.target.value)}
+              />
+            </div>
             <div className={styles.fields}>
               <label className={styles.field}>
                 <span className={styles.srOnly}>Seu nome</span>

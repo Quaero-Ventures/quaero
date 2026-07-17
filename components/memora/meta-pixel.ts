@@ -75,6 +75,6 @@ export function trackMetaLead(): void {
       value: 139.99,
     });
   } catch {
-    // The Formspree result remains authoritative if analytics is unavailable.
+    // The lead submission result remains authoritative if analytics is unavailable.
   }
 }
