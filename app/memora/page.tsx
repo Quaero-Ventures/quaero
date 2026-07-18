@@ -1,12 +1,13 @@
 import Image from "next/image";
 import {
-  Gift,
+  Camera,
+  CreditCard,
+  Heart,
+  ImageIcon,
   PenLine,
-  Ruler,
   ScanLine,
   ShieldCheck,
   Truck,
-  WalletCards,
 } from "lucide-react";
 
 import { MemoraFooter } from "@/components/memora/memora-footer";
@@ -17,22 +18,34 @@ import { MemoraPageAnalytics } from "@/components/memora/memora-page-analytics";
 import styles from "./memora.module.css";
 
 const benefits = [
-  { icon: PenLine, label: "Mensagem personalizada" },
-  { icon: ScanLine, label: "Gravação frente e verso" },
-  { icon: WalletCards, label: "Cabe na carteira" },
-  { icon: Ruler, label: "Verso com régua em cm" },
+  { icon: PenLine, label: "Traço original" },
+  { icon: ImageIcon, label: "Desenho gravado no cartão" },
+  { icon: CreditCard, label: "Cabe na carteira" },
+  { icon: ShieldCheck, label: "Feito para durar" },
 ];
 
 const steps = [
-  { icon: PenLine, label: "Você escreve" },
-  { icon: ScanLine, label: "Nós gravamos" },
-  { icon: Gift, label: "Você presenteia" },
+  {
+    icon: PenLine,
+    label: "A criança escreve ou desenha",
+    description: "Pode ser uma mensagem, assinatura ou desenho.",
+  },
+  {
+    icon: Camera,
+    label: "Você envia uma foto",
+    description: "Basta fotografar o papel com boa luz.",
+  },
+  {
+    icon: ScanLine,
+    label: "Nós gravamos o traço no cartão",
+    description: "Preservamos a escrita e o desenho originais.",
+  },
 ];
 
 const lowerBenefits = [
-  { icon: Gift, label: "Feito para presentear" },
+  { icon: Heart, label: "Uma lembrança única" },
   { icon: Truck, label: "Frete calculado separadamente" },
-  { icon: ShieldCheck, label: "Feito para durar" },
+  { icon: ShieldCheck, label: "Feito para guardar por muitos anos" },
 ];
 
 export default function MemoraPage() {
@@ -43,36 +56,44 @@ export default function MemoraPage() {
       <main>
         <section className={styles.hero} aria-labelledby="memora-title">
           <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>O traço real, preservado em metal</p>
             <h1 id="memora-title" className={styles.heroTitle}>
-              Palavras que ficam pra sempre.
+              A letra do seu filho, guardada para sempre.
             </h1>
             <p className={styles.heroSubtitle}>
-              Cartão de metal personalizado para o Dia dos Pais.
+              Envie uma foto da mensagem ou do desenho. Nós transformamos o traço
+              original em uma gravação no cartão.
             </p>
             <p className={styles.heroDescription}>
-              Uma mensagem feita para guardar na carteira e lembrar por muitos anos.
+              Uma lembrança feita pela criança para o pai guardar por muitos anos.
             </p>
-            <div className={styles.priceBox} aria-label="Preço: 139 reais e 99 centavos, mais frete">
-              <span className={styles.price}>R$ 139,99</span>
-              <span className={styles.shipping}>+ frete</span>
-            </div>
-            <div className={styles.primaryCta}>
-              <MemoraPageAnalytics />
+            <div className={styles.heroActionRow}>
+              <div
+                className={styles.priceBox}
+                aria-label="Preço: 139 reais e 99 centavos, mais frete"
+              >
+                <span className={styles.price}>R$ 139,99</span>
+                <span className={styles.shipping}>+ frete</span>
+              </div>
+              <div className={styles.primaryCta}>
+                <MemoraPageAnalytics />
+              </div>
             </div>
           </div>
           <div className={styles.heroVisual}>
             <Image
-              src="/memora/hero-wallet-card.png"
-              alt="Cartão de metal sobre uma carteira de couro, ao lado de uma caixa de presente com laço dourado"
+              src="/memora/hero-original-trace.webp"
+              alt="Mãe ajuda a filha a desenhar a família no papel enquanto o pai segura um cartão de metal com o mesmo desenho gravado"
               fill
               priority
-              sizes="(max-width: 767px) 100vw, 62vw"
+              sizes="(max-width: 767px) 100vw, 55vw"
               className={styles.heroImage}
             />
+            <span className={styles.heroVisualCaption}>Do papel ao cartão</span>
           </div>
         </section>
 
-        <section className={styles.benefitBar} aria-label="Características do cartão">
+        <section className={styles.benefitBar} aria-label="Diferenciais do cartão">
           <div className={styles.benefitGrid}>
             {benefits.map(({ icon: Icon, label }) => (
               <div className={styles.benefitItem} key={label}>
@@ -86,41 +107,53 @@ export default function MemoraPage() {
         <section className={styles.section} aria-labelledby="how-title">
           <h2 id="how-title" className={styles.sectionTitle}>Como funciona</h2>
           <ol className={styles.steps}>
-            {steps.map(({ icon: Icon, label }, index) => (
+            {steps.map(({ icon: Icon, label, description }, index) => (
               <li className={styles.step} key={label}>
                 <span className={styles.stepNumber}>{index + 1}</span>
                 <Icon aria-hidden="true" />
-                <p>{label}</p>
+                <h3>{label}</h3>
+                <p>{description}</p>
               </li>
             ))}
           </ol>
         </section>
 
         <section className={styles.examplesSection} aria-labelledby="examples-title">
-          <h2 id="examples-title" className={styles.sectionTitle}>Exemplos</h2>
+          <h2 id="examples-title" className={styles.sectionTitle}>
+            O traço continua sendo dela
+          </h2>
+          <p className={styles.sectionIntro}>
+            A mesma escrita, o mesmo desenho e as mesmas imperfeições — agora
+            preservados em metal.
+          </p>
           <div className={styles.examples}>
             <article className={styles.example}>
-              <h3>Frente</h3>
-              <div className={`${styles.metalCard} ${styles.cardFront}`}>
-                <p className={styles.cardGreeting}>Pai,</p>
-                <p>
-                  Obrigado por cada conselho,<br />
-                  por cada apoio e por acreditar<br />
-                  em mim todos os dias.
-                </p>
-                <p className={styles.signature}>Guilherme</p>
+              <div className={styles.exampleLabels} aria-hidden="true">
+                <span>Original</span>
+                <span>Gravado no cartão</span>
               </div>
+              <Image
+                src="/memora/example-handwriting.webp"
+                alt="Comparação entre a frase infantil Te amo, papai, assinada por Sofia no papel, e a mesma escrita gravada em um cartão de metal"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 767px) 100vw, 50vw"
+                className={styles.exampleImage}
+              />
             </article>
             <article className={styles.example}>
-              <h3>Verso</h3>
-              <div className={`${styles.metalCard} ${styles.cardBack}`}>
-                <div className={`${styles.ruler} ${styles.centimeters}`} aria-label="Régua superior em centímetros">
-                  <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8 cm</span>
-                </div>
-                <div className={`${styles.ruler} ${styles.inches}`} aria-label="Régua inferior em polegadas">
-                  <span>0</span><span>1</span><span>2</span><span>3 in</span>
-                </div>
+              <div className={styles.exampleLabels} aria-hidden="true">
+                <span>Original</span>
+                <span>Gravado no cartão</span>
               </div>
+              <Image
+                src="/memora/example-drawing.webp"
+                alt="Comparação entre um desenho infantil de pai, mãe, criança e coração assinado por Lucas, e o mesmo desenho gravado em um cartão de metal"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 767px) 100vw, 50vw"
+                className={styles.exampleImage}
+              />
             </article>
           </div>
         </section>

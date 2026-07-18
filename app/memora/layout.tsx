@@ -6,7 +6,7 @@ import { META_PIXEL_ID } from "@/components/memora/meta-pixel";
 export const metadata: Metadata = {
   title: "Memora Presentes | Cartão personalizado para o Dia dos Pais",
   description:
-    "Uma mensagem personalizada feita para guardar na carteira e lembrar por muitos anos.",
+    "Transforme a letra, assinatura ou desenho do seu filho em uma gravação personalizada para o pai guardar por muitos anos.",
   robots: {
     index: false,
     follow: false,
